@@ -1,0 +1,21 @@
+//Mitä tapahtuu kuin kirjoitetaan uusi note selaimella 
+
+
+
+selain lähettää palvelimelle kolme GET pyyntöä kyseisistä tiedostoista ->
+    -html html koodi saa aikaan haun html sivun tyyli tiedostolle (css) sekä JavaScripit (main.js) tiedoston
+    -main.css 
+    -main.js
+
+Palvelin vastaan lähettämällä kyseiset tiedostot selaimen, joka saa aikaseksi nettisivun palvelimeen.
+
+Suorittaessa JavaScripit koodia, lähtee GET pyyntö Json datasta selaimelta- > palvelimelle joka palauttaa selaimeen -> 
+ ja renderöi olemassa olevan json datan listan selaimelle.
+-data.json 
+
+ Kun käyttäjä kirjoittaa uuden viestin selaimella ja painaa tallenna näppäintä lähtee tästä POST pyyntö palvelimelle joka sitten,
+ suorittaa JavaScripit koodin ja renderöi tämän viestin  new_note takaisin selaimelle.
+
+ Post pyyntö, lähettää palvelimelle yhteensä viisi HTTP pyyntöä, html, main.css,main.js, data.json sekä new_note pyyntö.
+ Selain lataa uuudelleen muistiinpano sivun, joka saa aikaseksi koko sivun uudelleen latauksen, tätä kutsutaan uudelleenohjauspyynnöksi.
+
