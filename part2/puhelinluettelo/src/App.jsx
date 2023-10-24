@@ -1,0 +1,104 @@
+import { useState,useEffect } from 'react'
+import Filter from "./Filter"
+import AddPersonsForm from './AddPersonForm'
+import Persons from './Persons'
+import personService from './services/persons'
+
+
+
+const App = () => {
+  const [persons, setPersons] = useState([]) 
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [filteredPerson, setFilteredPerson] = useState('')
+
+useEffect(() => {
+  personService
+  .getPersons()
+    .then(initialPersons => {
+    setPersons(initialPersons)
+    console.log(initialPersons)
+  })
+}, [])
+
+
+  const addPerson = (event) => {
+    event.preventDefault();
+    const nameAllreadyExists = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase());
+    
+    if (nameAllreadyExists){
+      const confirmUpdate = window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`);
+
+    if(confirmUpdate){
+      const updatePerson = {...nameAllreadyExists, number:newNumber}
+      personService
+      .updatePersonPhone(updatePerson.id,updatePerson)
+      .then((returnedItem) => {
+        setPersons(persons.map((person) => (person.id === returnedItem.id? returnedItem: person)));
+        setNewName('')
+        setNewNumber('')
+      })
+      .catch((error) => {
+        console.log("Error updating the number",error)
+      
+      });
+    }
+    } else {
+    const newPersons = {
+      name: newName,
+      number: newNumber,
+    }
+    personService.createPerson(newPersons)
+    .then(returnedPerson => {
+      setPersons(persons.concat(returnedPerson))
+      setNewName('')
+      setNewNumber('')
+    }).catch((error) => {
+      console.log("Error creating new person", error);
+    });
+  }
+  
+  };
+
+  const removePerson = (id) => {
+    const personToDelete = persons.find(person => person.id === id)
+    if (!personToDelete) return;
+    if (window.confirm(`Do you really want to delete ${personToDelete.name}?`)) {
+   personService.removeItem(id)
+   const updatedPersons = persons.filter(person => person.id !== id)
+   setPersons(updatedPersons)
+  }else{
+    return
+  }
+    
+  }
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
+    
+  }
+const handleNumberChange = (event) => {
+  setNewNumber(event.target.value)
+}
+const handlePersonFilter = (event) => {
+  setFilteredPerson(event.target.value)
+}
+const personsToShow = 
+    persons.filter(person => person.name?.toLowerCase()?.includes(filteredPerson?.toLowerCase()))
+   
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      
+      <Filter handlePersonFilter={handlePersonFilter} value={filteredPerson}/>
+      <h3>Add a new</h3>
+      <AddPersonsForm  addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
+      <h3>Numbers</h3>
+      <Persons personsToShow={personsToShow} removePerson={removePerson}/>
+     
+    </div>
+  )
+
+}
+
+
+export default App;
