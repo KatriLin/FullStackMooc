@@ -3,6 +3,7 @@ import Filter from "./Filter"
 import AddPersonsForm from './AddPersonForm'
 import Persons from './Persons'
 import personService from './services/persons'
+import Notification from './Notification'
 
 
 
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filteredPerson, setFilteredPerson] = useState('')
+  const [message, setMessage] = useState(null)
 
 useEffect(() => {
   personService
@@ -35,11 +37,25 @@ useEffect(() => {
       .updatePersonPhone(updatePerson.id,updatePerson)
       .then((returnedItem) => {
         setPersons(persons.map((person) => (person.id === returnedItem.id? returnedItem: person)));
+        setMessage({
+          category:'succesfull',
+          message:  `'${nameAllreadyExists.name}' phonenumber was succesfully updated.`
+      })
+        setTimeout(() => {
+          setMessage(null)
+        }, 3000)
         setNewName('')
         setNewNumber('')
       })
       .catch((error) => {
         console.log("Error updating the number",error)
+        setMessage({
+          category: 'error',
+          message:`ERROR ${nameAllreadyExists.name} has already been removed from the server`
+      })
+        setTimeout(() => {
+          setMessage(null)
+        }, 3000) 
       
       });
     }
@@ -51,10 +67,24 @@ useEffect(() => {
     personService.createPerson(newPersons)
     .then(returnedPerson => {
       setPersons(persons.concat(returnedPerson))
+      setMessage({
+        category: 'succesfull',
+        message:`'${returnedPerson.name}' was added to the phonebook.`
+    })
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000)
       setNewName('')
       setNewNumber('')
     }).catch((error) => {
       console.log("Error creating new person", error);
+      setMessage({
+        category: 'error',
+        message:'Error creating a new person.'
+    })
+    setTimeout(() => {
+      setMessage(null)
+    }, 3000)
     });
   }
   
@@ -65,6 +95,13 @@ useEffect(() => {
     if (!personToDelete) return;
     if (window.confirm(`Do you really want to delete ${personToDelete.name}?`)) {
    personService.removeItem(id)
+   setMessage({
+    category:'succesfull',
+    message:`'${personToDelete.name}' was deleted from the phonebook.`
+   })
+  setTimeout(() => {
+    setMessage(null)
+  }, 3000)
    const updatedPersons = persons.filter(person => person.id !== id)
    setPersons(updatedPersons)
   }else{
@@ -84,11 +121,12 @@ const handlePersonFilter = (event) => {
 }
 const personsToShow = 
     persons.filter(person => person.name?.toLowerCase()?.includes(filteredPerson?.toLowerCase()))
-   
+
+ 
   return (
     <div>
       <h2>Phonebook</h2>
-      
+      {message && <Notification message={message} /> }
       <Filter handlePersonFilter={handlePersonFilter} value={filteredPerson}/>
       <h3>Add a new</h3>
       <AddPersonsForm  addPerson={addPerson} newName={newName} newNumber={newNumber} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />

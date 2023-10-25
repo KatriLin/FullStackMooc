@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Mia Winter",
-      "number": "040-5556667",
+      "number": "044-1234567",
       "id": 5
     },
     {
@@ -11,29 +11,14 @@
       "id": 6
     },
     {
-      "name": "Laura Loi",
-      "number": "055-333444",
-      "id": 7
-    },
-    {
       "name": "Ada Lovelace",
       "number": "040-123456",
       "id": 8
     },
     {
-      "name": "Dan Abramov",
-      "number": "12-43-234345'",
+      "name": "Mikko Mallikainen",
+      "number": "53423424",
       "id": 9
-    },
-    {
-      "name": "Ville Vallaton",
-      "number": "040-555-555",
-      "id": 10
-    },
-    {
-      "name": "Mikko Mallikas",
-      "number": "050-8889999",
-      "id": 11
     }
   ]
 }
