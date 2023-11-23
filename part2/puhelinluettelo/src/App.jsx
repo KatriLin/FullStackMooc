@@ -26,17 +26,23 @@ useEffect(() => {
 
   const addPerson = (event) => {
     event.preventDefault();
+
+    const personObject = {
+      name: newName,
+      number: newNumber
+    }
+
     const nameAllreadyExists = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase());
     
     if (nameAllreadyExists){
       const confirmUpdate = window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`);
 
     if(confirmUpdate){
-      const updatePerson = {...nameAllreadyExists, number:newNumber}
       personService
-      .updatePersonPhone(updatePerson.id,updatePerson)
-      .then((returnedItem) => {
-        setPersons(persons.map((person) => (person.id === returnedItem.id? returnedItem: person)));
+      .updatePersonPhone(nameAllreadyExists.id,personObject)
+      .then((returnedPerson) => {
+        setPersons(persons.map((person) => (person.id !== nameAllreadyExists.id? person: returnedPerson)
+        ));
         setMessage({
           category:'succesfull',
           message:  `'${nameAllreadyExists.name}' phonenumber was succesfully updated.`
