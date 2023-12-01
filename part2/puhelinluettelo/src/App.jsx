@@ -27,10 +27,7 @@ useEffect(() => {
   const addPerson = (event) => {
     event.preventDefault();
 
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
+  
 
     const nameAllreadyExists = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase());
     
@@ -38,11 +35,11 @@ useEffect(() => {
       const confirmUpdate = window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`);
 
     if(confirmUpdate){
+      const updatedNumber = {...nameAllreadyExists, number: newNumber};
       personService
-      .updatePersonPhone(nameAllreadyExists.id,personObject)
+      .updatePersonPhone(nameAllreadyExists.id,updatedNumber)
       .then((returnedPerson) => {
-        setPersons(persons.map((person) => (person.id !== nameAllreadyExists.id? person: returnedPerson)
-        ));
+        setPersons(persons.map(person => person.id !== nameAllreadyExists.id? person: returnedPerson));
         setMessage({
           category:'succesfull',
           message:  `'${nameAllreadyExists.name}' phonenumber was succesfully updated.`
@@ -83,10 +80,10 @@ useEffect(() => {
       setNewName('')
       setNewNumber('')
     }).catch((error) => {
-      console.log("Error creating new person", error);
+     
       setMessage({
         category: 'error',
-        message:'Error creating a new person.'
+        message: `${error.response.data.error}`
     })
     setTimeout(() => {
       setMessage(null)
